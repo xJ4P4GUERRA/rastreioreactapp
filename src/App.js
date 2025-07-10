@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import GlobalStyles from './globalStyles';
+import HomePage from './pages/HomePage';
+import TrackingPage from './pages/TrackingPage';
+import LoginPage from './pages/LoginPage';
+import AdminLayout from './components/admin/AdminLayout';
+import ProtectedRoute from './components/admin/ProtectedRoute';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminClientsPage from './pages/AdminClientsPage';
+import AdminNewTrackingPage from './pages/AdminNewTrackingPage';
+import AdminSettingsPage from './pages/AdminSettingsPage';
 
 function App() {
+  const location = useLocation();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <GlobalStyles />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          {/* Rotas Públicas */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/rastreio/:trackingCode" element={<TrackingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Rotas de Admin Protegidas */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="dashboard" element={<AdminDashboardPage />} />
+              <Route path="clients" element={<AdminClientsPage />} />
+              <Route path="new-tracking" element={<AdminNewTrackingPage />} />
+              <Route path="settings" element={<AdminSettingsPage />} />
+            </Route>
+          </Route>
+        </Routes>
+      </AnimatePresence>
+    </>
   );
 }
 
+// Exportamos o App diretamente, sem o Wrapper
 export default App;
