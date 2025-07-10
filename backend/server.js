@@ -9,7 +9,7 @@ dotenv.config();
 // Conexão com o Banco de Dados
 const mongooseOptions = {
   serverSelectionTimeoutMS: 5000,
-  dbName: 'rastreio_app' // Verifique se este é o nome correto do seu DB no Atlas
+  dbName: 'rastreio_app' 
 };
 
 mongoose.connect(process.env.MONGO_URI, mongooseOptions)
@@ -18,33 +18,16 @@ mongoose.connect(process.env.MONGO_URI, mongooseOptions)
 
 const app = express();
 
-// --- CONFIGURAÇÃO DE CORS ---
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://rastreioreactapp.vercel.app' // Sua URL de produção na Vercel
-];
+// --- MUDANÇA AQUI: Deixando o CORS totalmente aberto para teste ---
+app.use(cors()); 
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Acesso não permitido por CORS'));
-    }
-  },
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
 app.use(express.json());
 
 // --- ROTAS DA API ---
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api', require('./routes/packageRoutes'));
-app.use('/api', require('./routes/clientRoutes'));
+app.use('/api',require('./routes/clientRoutes'));
 
-
-// A PORTA ONDE O SERVIDOR VAI RODAR
 const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
