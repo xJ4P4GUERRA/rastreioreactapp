@@ -18,16 +18,12 @@ mongoose.connect(process.env.MONGO_URI, mongooseOptions)
 
 const app = express();
 
-// --- MUDANÇA ESSENCIAL AQUI: Configuração de CORS específica ---
-// Lista de domínios que podem acessar sua API
+// Configuração de CORS
 const allowedOrigins = [
-  'https://rastreioreactapp.vercel.app' // Seu frontend no Vercel
-  // Você pode adicionar 'http://localhost:3000' aqui se precisar testar o frontend localmente
+  'https://rastreioreactapp.vercel.app'
 ];
-
 const corsOptions = {
   origin: function (origin, callback) {
-    // Permite requisições da sua lista de origens permitidas
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -36,13 +32,19 @@ const corsOptions = {
   },
   optionsSuccessStatus: 200
 };
-
 app.use(cors(corsOptions));
-// --- FIM DA MUDANÇA ---
 
 app.use(express.json());
 
+// --- ROTA DE TESTE PÚBLICA ---
+app.get('/test-mobile', (req, res) => {
+  console.log('>>> REQUISIÇÃO DE TESTE DO /test-mobile RECEBIDA! <<<');
+  res.status(200).json({ message: 'Conexão com o servidor OK!' });
+});
+// --- FIM DA ROTA DE TESTE ---
+
 // --- ROTAS DA API ---
+// ATENÇÃO: A rota de teste tem que vir ANTES desta linha
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api', require('./routes/packageRoutes'));
 app.use('/api',require('./routes/clientRoutes'));
