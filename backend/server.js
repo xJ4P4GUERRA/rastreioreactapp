@@ -18,8 +18,27 @@ mongoose.connect(process.env.MONGO_URI, mongooseOptions)
 
 const app = express();
 
-// --- MUDANÇA AQUI: Deixando o CORS totalmente aberto para teste ---
-app.use(cors()); 
+// --- MUDANÇA AQUI: Configuração de CORS mais específica ---
+// Lista de domínios que podem acessar sua API
+const allowedOrigins = [
+  'https://rastreioreactapp.vercel.app', // Seu frontend
+  'http://localhost:3000' // Para testes locais do frontend
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Permite requisições sem 'origin' (como apps mobile ou Postman) ou da sua lista
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+// --- FIM DA MUDANÇA ---
 
 app.use(express.json());
 
