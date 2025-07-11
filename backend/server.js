@@ -18,16 +18,16 @@ mongoose.connect(process.env.MONGO_URI, mongooseOptions)
 
 const app = express();
 
-// --- MUDANÇA AQUI: Configuração de CORS mais específica ---
+// --- MUDANÇA ESSENCIAL AQUI: Configuração de CORS específica ---
 // Lista de domínios que podem acessar sua API
 const allowedOrigins = [
-  'https://rastreioreactapp.vercel.app', // Seu frontend
-  'http://localhost:3000' // Para testes locais do frontend
+  'https://rastreioreactapp.vercel.app' // Seu frontend no Vercel
+  // Você pode adicionar 'http://localhost:3000' aqui se precisar testar o frontend localmente
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Permite requisições sem 'origin' (como apps mobile ou Postman) ou da sua lista
+    // Permite requisições da sua lista de origens permitidas
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
