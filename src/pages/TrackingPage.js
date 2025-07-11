@@ -2,20 +2,18 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../api/axiosConfig'; // <-- ALTERADO: Importa a nossa config centralizada
+import api from '../api/axiosConfig'; // A importação continua a mesma
 import TrackingStatus from '../components/TrackingStatus';
 import TrackingHistory from '../components/TrackingHistory';
 import TrackingPageSkeleton from '../components/TrackingPageSkeleton';
 import { FaCalendarAlt } from 'react-icons/fa';
 
-// ... (Todos os `styled-components` continuam iguais)
-
+// ... (Todos os styled-components continuam exatamente iguais)
 const pageVariants = {
   initial: { opacity: 0, scale: 0.99 },
   in: { opacity: 1, scale: 1 },
   out: { opacity: 0, scale: 0.99 }
 };
-
 const PageContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
@@ -30,12 +28,10 @@ const PageContainer = styled(motion.div)`
     align-items: flex-start;
   }
 `;
-
 const ContentWrapper = styled.div`
   width: 100%;
   max-width: 800px;
 `;
-
 const TrackingCard = styled(motion.div)`
   background: rgba(31, 41, 55, 0.8);
   backdrop-filter: blur(10px);
@@ -48,7 +44,6 @@ const TrackingCard = styled(motion.div)`
     padding: 20px;
   }
 `;
-
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -63,11 +58,9 @@ const Header = styled.div`
     gap: 1rem;
   }
 `;
-
 const Title = styled.h2`
   color: #F9FAFB;
 `;
-
 const TrackingCode = styled.span`
   background-color: #FBBF24;
   color: #111827;
@@ -76,7 +69,6 @@ const TrackingCode = styled.span`
   font-weight: bold;
   font-family: 'Courier New', Courier, monospace;
 `;
-
 const NewQueryButton = styled.button`
   background-color: #374151;
   color: #F9FAFB;
@@ -91,7 +83,6 @@ const NewQueryButton = styled.button`
     border-color: #6B7281;
   }
 `;
-
 const SummaryCard = styled(motion.div)`
   background-color: #111827;
   border-radius: 10px;
@@ -108,20 +99,17 @@ const SummaryCard = styled(motion.div)`
     gap: 1rem;
   }
 `;
-
 const SummaryItem = styled.div`
   text-align: center;
   @media (max-width: 768px) {
     text-align: left;
   }
 `;
-
 const SummaryLabel = styled.p`
   font-size: 0.9rem;
   color: #9CA3AF;
   margin-bottom: 5px;
 `;
-
 const SummaryValue = styled.p`
   font-size: 1.2rem;
   font-weight: bold;
@@ -130,7 +118,6 @@ const SummaryValue = styled.p`
   align-items: center;
   gap: 8px;
 `;
-
 const ErrorText = styled(motion.p)`
   text-align: center;
   font-size: 1.2rem;
@@ -139,7 +126,6 @@ const ErrorText = styled(motion.p)`
   background: #374151;
   border-radius: 12px;
 `;
-
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'easeOut' } },
@@ -157,16 +143,21 @@ const TrackingPage = () => {
     setLoading(true);
     setError('');
 
-    // A URL agora não precisa do /api/ pois já está no axiosConfig
-    const apiUrl = `/track/${trackingCode}`;
+    // --- MUDANÇA PRINCIPAL AQUI ---
+    // Construímos a URL completa e absoluta, usando a variável de ambiente do Vercel.
+    // Isso remove qualquer ambiguidade para o navegador do celular.
+    const apiUrl = `${process.env.REACT_APP_API_URL}/track/${trackingCode}`;
+    // --- FIM DA MUDANÇA ---
 
-    // Usamos o 'api' em vez de 'axios'
+    // O resto da chamada continua igual, usando a instância 'api'
     api.get(apiUrl)
       .then(response => {
         setData(response.data);
       })
       .catch(err => {
-        setError(err.response?.data?.message || 'Erro ao buscar o rastreio.');
+        // Mensagem de erro melhorada para depuração
+        console.error("Erro detalhado da API:", err);
+        setError(err.response?.data?.message || 'Erro ao procurar o rastreio.');
       })
       .finally(() => {
         setLoading(false);
