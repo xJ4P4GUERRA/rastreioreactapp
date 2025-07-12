@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../api/axiosConfig'; // A importação continua a mesma
+import api from '../api/axiosConfig';
 import TrackingStatus from '../components/TrackingStatus';
 import TrackingHistory from '../components/TrackingHistory';
 import TrackingPageSkeleton from '../components/TrackingPageSkeleton';
 import { FaCalendarAlt } from 'react-icons/fa';
 
 // ... (Todos os styled-components continuam exatamente iguais)
+// ... (Copie e cole toda a parte de estilos que já existia)
 const pageVariants = {
   initial: { opacity: 0, scale: 0.99 },
   in: { opacity: 1, scale: 1 },
@@ -131,7 +132,6 @@ const cardVariants = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: 'easeOut' } },
 };
 
-
 const TrackingPage = () => {
   const { trackingCode } = useParams();
   const navigate = useNavigate();
@@ -143,19 +143,16 @@ const TrackingPage = () => {
     setLoading(true);
     setError('');
 
-    // --- MUDANÇA PRINCIPAL AQUI ---
-    // Construímos a URL completa e absoluta, usando a variável de ambiente do Vercel.
-    // Isso remove qualquer ambiguidade para o navegador do celular.
-    const apiUrl = `${process.env.REACT_APP_API_URL}/track/${trackingCode}`;
-    // --- FIM DA MUDANÇA ---
+    // --- CORREÇÃO FINAL AQUI ---
+    // Adicionamos o prefixo /api/ que estava faltando na URL.
+    const apiUrl = `${process.env.REACT_APP_API_URL}/api/track/${trackingCode}`;
+    // --- FIM DA CORREÇÃO ---
 
-    // O resto da chamada continua igual, usando a instância 'api'
     api.get(apiUrl)
       .then(response => {
         setData(response.data);
       })
       .catch(err => {
-        // Mensagem de erro melhorada para depuração
         console.error("Erro detalhado da API:", err);
         setError(err.response?.data?.message || 'Erro ao procurar o rastreio.');
       })
