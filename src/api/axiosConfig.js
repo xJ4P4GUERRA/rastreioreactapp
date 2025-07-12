@@ -1,29 +1,28 @@
-import axios from 'axios';
+const jwt = require('jsonwebtoken');
 
-// A URL da API agora é lida de uma forma que o Vercel entende de forma consistente.
-const apiUrl = process.env.REACT_APP_API_URL;
+// A função de middleware foi alterada para não fazer nada e
+// simplesmente passar para a próxima etapa (next()).
+// Isto desativa a proteção de todas as rotas que a usam.
+module.exports = function (req, res, next) {
+  
+  // A lógica de verificação de token foi removida.
+  // A requisição agora passa diretamente.
+  next();
 
-const api = axios.create({
-  baseURL: apiUrl,
-});
+  /*
+  // --- CÓDIGO ANTIGO (AGORA DESATIVADO) ---
+  const token = req.header('Authorization')?.replace('Bearer ', '');
 
-// O interceptor continua o mesmo, está correto.
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('authToken');
-    const apiKey = process.env.REACT_APP_API_KEY;
-
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    if (apiKey) {
-      config.headers['x-api-key'] = apiKey;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+  if (!token) {
+    return res.status(401).json({ msg: 'Nenhum token, autorização negada' });
   }
-);
 
-export default api;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.admin = decoded.admin;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token não é válido' });
+  }
+  */
+};
