@@ -12,6 +12,9 @@ import AdminClientsPage from './pages/AdminClientsPage';
 import AdminNewTrackingPage from './pages/AdminNewTrackingPage';
 import AdminSettingsPage from './pages/AdminSettingsPage';
 
+// --- PASSO 1: Importar a página de registo temporária ---
+import RegisterAdminPage from './pages/RegisterAdminPage';
+
 function App() {
   const location = useLocation();
 
@@ -24,6 +27,11 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/rastreio/:trackingCode" element={<TrackingPage />} />
           <Route path="/login" element={<LoginPage />} />
+
+          {/* --- PASSO 2: Adicionar a rota temporária para registo --- */}
+          {/* AVISO: Lembre-se de remover esta linha e o ficheiro após criar o seu utilizador */}
+          <Route path="/register-first-admin" element={<RegisterAdminPage />} />
+
 
           {/* Rotas de Admin Protegidas */}
           <Route element={<ProtectedRoute />}>
@@ -40,5 +48,4 @@ function App() {
   );
 }
 
-// Exportamos o App diretamente, sem o Wrapper
 export default App;
