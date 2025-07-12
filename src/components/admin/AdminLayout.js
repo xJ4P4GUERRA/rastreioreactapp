@@ -1,60 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
-import { Outlet } from 'react-router-dom';
-import Sidebar from './Sidebar';
-import Header from './Header'; // Vamos criar este novo componente
-import { lightTheme, darkTheme } from '../../theme';
+// src/components/admin/AdminLayout.js
 
-const DashboardContainer = styled.div`
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar'; // CORREÇÃO FINAL: Importa o componente com o nome correto
+import styled from 'styled-components';
+
+const LayoutContainer = styled.div`
   display: flex;
   min-height: 100vh;
-  background-color: ${({ theme }) => theme.body};
-  transition: background-color 0.3s ease;
+  background-color: #111827; // Cor de fundo do corpo
 `;
 
-const ContentArea = styled.main`
+const MainContent = styled.main`
   flex-grow: 1;
-  padding: 2rem;
+  padding: 2rem 3rem;
+  width: 100%;
   overflow-y: auto;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-    margin-top: 60px; /* Espaço para o Header fixo */
-  }
 `;
 
 const AdminLayout = () => {
-  const [theme, setTheme] = useState('light');
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Lógica para persistir o tema no localStorage
-  useEffect(() => {
-    const localTheme = window.localStorage.getItem('theme');
-    localTheme && setTheme(localTheme);
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    window.localStorage.setItem('theme', newTheme);
-  };
-
+  // Esta versão do layout não contém mais nenhuma lógica de autenticação ou logout.
+  // Ela simplesmente renderiza a barra lateral e o conteúdo principal da página.
   return (
-    <ThemeProvider theme={theme === 'light' ? lightTheme : darkTheme}>
-      <DashboardContainer>
-        <Sidebar isOpen={isMobileMenuOpen} closeMenu={() => setMobileMenuOpen(false)} />
-        <div style={{flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
-          <Header 
-            toggleTheme={toggleTheme} 
-            theme={theme}
-            toggleMenu={() => setMobileMenuOpen(!isMobileMenuOpen)}
-          />
-          <ContentArea>
-            <Outlet />
-          </ContentArea>
-        </div>
-      </DashboardContainer>
-    </ThemeProvider>
+    <LayoutContainer>
+      <Sidebar />
+      <MainContent>
+        <Outlet />
+      </MainContent>
+    </LayoutContainer>
   );
 };
 

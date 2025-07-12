@@ -1,28 +1,14 @@
-const jwt = require('jsonwebtoken');
+// src/api/axiosConfig.js
 
-// A função de middleware foi alterada para não fazer nada e
-// simplesmente passar para a próxima etapa (next()).
-// Isto desativa a proteção de todas as rotas que a usam.
-module.exports = function (req, res, next) {
-  
-  // A lógica de verificação de token foi removida.
-  // A requisição agora passa diretamente.
-  next();
+import axios from 'axios';
 
-  /*
-  // --- CÓDIGO ANTIGO (AGORA DESATIVADO) ---
-  const token = req.header('Authorization')?.replace('Bearer ', '');
+// Cria uma instância do Axios com a URL base do seu backend.
+// Esta URL vem das variáveis de ambiente da Netlify.
+const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
 
-  if (!token) {
-    return res.status(401).json({ msg: 'Nenhum token, autorização negada' });
-  }
+// A lógica que adicionava o token de autenticação foi completamente removida
+// para evitar erros de build.
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.admin = decoded.admin;
-    next();
-  } catch (err) {
-    res.status(401).json({ msg: 'Token não é válido' });
-  }
-  */
-};
+export default api;
