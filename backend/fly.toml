@@ -1,0 +1,25 @@
+# Ficheiro de configuração para o Fly.io
+# Nome da sua aplicação no Fly.io
+app = "site-rastreio"
+
+# Região primária onde a sua aplicação vai correr
+primary_region = "gru"
+
+# Secção de build: Diz ao Fly.io como construir a sua aplicação
+[build]
+  # Aponta explicitamente para o Dockerfile na pasta atual
+  dockerfile = "Dockerfile"
+
+# Configurações do serviço HTTP
+[http_service]
+  # A porta interna que a sua aplicação Express usa (definida no server.js)
+  internal_port = 8080
+
+  # Força o uso de HTTPS
+  force_https = true
+
+  # Desliga as máquinas automaticamente para poupar recursos
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]

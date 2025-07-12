@@ -75,11 +75,9 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     try {
-      // --- CORREÇÃO APLICADA AQUI ---
-      // A chamada agora é apenas para '/login'.
-      // O Axios vai juntar a baseURL ('.../admin') com este caminho.
-      // Resultado final: 'https://site-rastreio.fly.dev/admin/login'
-      const response = await api.post('/login', {
+      // --- ESTA É A LINHA CORRIGIDA E FINAL ---
+      // A chamada agora inclui o caminho completo '/admin/login'
+      const response = await api.post('/admin/login', {
         username: username.toLowerCase(),
         password
       });
