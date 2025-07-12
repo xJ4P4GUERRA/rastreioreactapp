@@ -1,30 +1,25 @@
 import axios from 'axios';
 
+// A URL da API agora é lida de uma forma que o Vercel entende de forma consistente.
+const apiUrl = process.env.REACT_APP_API_URL;
+
 const api = axios.create({
-  // VERSÃO FINAL E CORRETA: Apenas a URL base, SEM /api no final
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: apiUrl,
 });
 
-// O interceptor adiciona os cabeçalhos em CADA requisição
+// O interceptor continua o mesmo, está correto.
 api.interceptors.request.use(
   (config) => {
-    // Pega o token de login do localStorage
     const token = localStorage.getItem('authToken');
-    
-    // Pega a chave de API fixa das variáveis de ambiente do React
     const apiKey = process.env.REACT_APP_API_KEY;
 
-    // Adiciona o cabeçalho do Token de Login, se ele existir
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-
-    // Adiciona o cabeçalho da Chave de API, se ela existir
     if (apiKey) {
       config.headers['x-api-key'] = apiKey;
     }
-
-    return config; // Retorna a configuração com os novos cabeçalhos
+    return config;
   },
   (error) => {
     return Promise.reject(error);
