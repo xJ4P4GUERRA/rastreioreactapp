@@ -1,7 +1,11 @@
 import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { ThemeProvider } from 'styled-components'; // Importa o ThemeProvider
 import GlobalStyles from './globalStyles';
+import { theme } from './theme'; // Importa o seu objeto de tema
+
+// Importa as suas páginas
 import HomePage from './pages/HomePage';
 import TrackingPage from './pages/TrackingPage';
 import AdminLayout from './components/admin/AdminLayout';
@@ -14,7 +18,8 @@ function App() {
   const location = useLocation();
 
   return (
-    <>
+    // O ThemeProvider envolve toda a aplicação, fornecendo o tema a todos os componentes
+    <ThemeProvider theme={theme}>
       <GlobalStyles />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -22,8 +27,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/rastreio/:trackingCode" element={<TrackingPage />} />
           
-          {/* A rota de login foi removida */}
-
           {/* Rotas de Admin agora são públicas e diretas */}
           <Route path="/admin" element={<AdminLayout />}>
             {/* Redireciona /admin para /admin/dashboard */}
@@ -35,7 +38,7 @@ function App() {
           </Route>
         </Routes>
       </AnimatePresence>
-    </>
+    </ThemeProvider>
   );
 }
 
