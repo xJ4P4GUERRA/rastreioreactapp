@@ -1,15 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { createClient, getAllClients, deleteClient } = require('../controllers/clientController');
-const { protect } = require('../middleware/authMiddleware');
+const clientController = require('../controllers/clientController');
+const jwtAuth = require('../middleware/authMiddleware'); // O middleware que desativámos
 
-// Rotas para /api/admin/clients
-router.route('/admin/clients')
-  .post(protect, createClient)
-  .get(protect, getAllClients);
+// Rota para obter todos os clientes
+// Acede via: GET /admin/clients
+router.get('/clients', jwtAuth, clientController.getAllClients);
 
-// Nova rota para deletar um cliente específico pelo ID
-router.route('/admin/clients/:id')
-  .delete(protect, deleteClient);
+// Rota para criar um novo cliente
+// Acede via: POST /admin/clients
+router.post('/clients', jwtAuth, clientController.createClient);
+
+// Rota para apagar um cliente
+// Acede via: DELETE /admin/clients/:id
+router.delete('/clients/:id', jwtAuth, clientController.deleteClient);
 
 module.exports = router;
