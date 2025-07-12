@@ -1,27 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  registerAdmin, 
-  loginAdmin,
-  getAllAdmins,  // <-- Importa as novas funções
-  deleteAdmin 
-} = require('../controllers/authController');
+const authController = require('../controllers/authController');
 
-const { protect } = require('../middleware/authMiddleware'); // O protetor antigo de API Key
-const { protectWithToken } = require('../middleware/jwtAuth'); // O novo protetor de Token
+// --- ROTA DE REGISTO ---
+// Rota: POST /admin/register
+// Descrição: Cria um novo utilizador administrador.
+router.post('/register', authController.register);
 
-// Rota para fazer login (pública)
-router.post('/login', loginAdmin);
 
-// Rota para registrar um novo admin.
-// Continua protegida pela API Key principal, para que só o "super admin" crie contas.
-router.post('/register', protect, registerAdmin);
-
-// Rota para listar todos os usuários. Protegida por Token.
-router.get('/users', protectWithToken, getAllAdmins);
-
-// Rota para deletar um usuário. Protegida por Token.
-router.delete('/users/:id', protectWithToken, deleteAdmin);
+// --- ROTA DE LOGIN ---
+// Rota: POST /admin/login
+// Descrição: Autentica um utilizador e retorna um token.
+router.post('/login', authController.login);
 
 
 module.exports = router;
