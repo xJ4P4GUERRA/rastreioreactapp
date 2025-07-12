@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import api from '../api/axiosConfig'; // <-- ALTERADO
+import api from '../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 
-// ... (Todos os `styled-components` continuam iguais)
+// ... (Todos os `styled-components` continuam exatamente iguais)
 const LoginPageContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #111827; /* Cor de fundo fixa */
+  background-color: #111827;
 `;
-
 const LoginCard = styled.div`
-  background-color: #1F2937; /* Cor do card fixa */
+  background-color: #1F2937;
   padding: 2.5rem;
   border-radius: 16px;
   border: 1px solid #374151;
@@ -21,20 +20,17 @@ const LoginCard = styled.div`
   max-width: 400px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 `;
-
 const Title = styled.h1`
   font-size: 2rem;
   color: #F9FAFB;
   text-align: center;
   margin-bottom: 2rem;
 `;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 `;
-
 const Input = styled.input`
   padding: 1rem;
   border-radius: 8px;
@@ -49,7 +45,6 @@ const Input = styled.input`
     box-shadow: 0 0 0 3px #FBBF2433;
   }
 `;
-
 const LoginButton = styled.button`
   background-color: #FBBF24;
   color: #111827;
@@ -65,11 +60,10 @@ const LoginButton = styled.button`
     background-color: #F59E0B;
   }
 `;
-
 const ErrorMessage = styled.p`
   color: #FCA5A5;
   text-align: center;
-  min-height: 1rem; /* Garante espaço mesmo quando não há erro */
+  min-height: 1rem;
   margin-top: 1rem;
 `;
 
@@ -83,8 +77,8 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
-      const response = await api.post('/auth/login', {
+      // CORREÇÃO: Adicionado /api/
+      const response = await api.post('/api/auth/login', {
         username: username.toLowerCase(),
         password
       });

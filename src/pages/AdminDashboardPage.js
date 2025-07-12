@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import api from '../api/axiosConfig'; // <-- ALTERADO
+import api from '../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { FaTrash, FaExclamationTriangle } from 'react-icons/fa';
@@ -114,6 +114,7 @@ const CancelButton = styled(ActionButton)`
   &:hover { background-color: #4B5563; }
 `;
 
+
 const statusOptions = ['Confirmado', 'Preparação', 'Em Trânsito', 'Em Rota', 'Entregue'];
 
 Modal.setAppElement('#root');
@@ -130,13 +131,12 @@ const AdminDashboardPage = () => {
   const [newLocal, setNewLocal] = useState('');
   const navigate = useNavigate();
   const theme = useTheme();
-  // A chave de API agora é adicionada automaticamente pelo axiosConfig
 
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      // ALTERADO: Usa 'api' e a URL relativa
-      const response = await api.get('/admin/packages');
+      // CORREÇÃO: Adicionado /api/
+      const response = await api.get('/api/admin/packages');
       setPackages(response.data);
     } catch (err) {
       setError('Falha ao carregar os pacotes.');
@@ -147,7 +147,7 @@ const AdminDashboardPage = () => {
 
   useEffect(() => {
     fetchPackages();
-  }, []); // apiKey removido das dependências
+  }, []);
 
   const openUpdateModal = (pkg) => {
     setSelectedPackage(pkg);
@@ -168,9 +168,9 @@ const AdminDashboardPage = () => {
     e.preventDefault();
     if (!selectedPackage) return;
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
+      // CORREÇÃO: Adicionado /api/
       await api.put(
-        `/admin/packages/${selectedPackage.code}/update`,
+        `/api/admin/packages/${selectedPackage.code}/update`,
         { status: newStatus, local: newLocal }
       );
       closeUpdateModal();
@@ -193,8 +193,8 @@ const AdminDashboardPage = () => {
   const handleDeletePackage = async () => {
     if (!packageToDeleteId) return;
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
-      await api.delete(`/admin/packages/${packageToDeleteId}`);
+      // CORREÇÃO: Adicionado /api/
+      await api.delete(`/api/admin/packages/${packageToDeleteId}`);
       fetchPackages();
       closeConfirmDeleteModal();
     } catch (err) {

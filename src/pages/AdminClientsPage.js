@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import api from '../api/axiosConfig'; // <-- ALTERADO
+import api from '../api/axiosConfig';
 import Modal from 'react-modal';
 import { FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 
@@ -135,8 +135,8 @@ const AdminClientsPage = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      // ALTERADO: Usa 'api' e a URL relativa
-      const response = await api.get('/admin/clients');
+      // CORREÇÃO: Adicionado /api/
+      const response = await api.get('/api/admin/clients');
       setClients(response.data);
     } catch (err) {
       setError('Falha ao carregar os clientes.');
@@ -160,8 +160,8 @@ const AdminClientsPage = () => {
   const handleCreateClient = async (e) => {
     e.preventDefault();
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
-      await api.post('/admin/clients', 
+      // CORREÇÃO: Adicionado /api/
+      await api.post('/api/admin/clients', 
         { name: newClientName, cpf: newClientCpf, phone: newClientPhone }
       );
       closeCreateModal();
@@ -184,8 +184,8 @@ const AdminClientsPage = () => {
   const handleDeleteClient = async () => {
     if (!clientToDeleteId) return;
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
-      await api.delete(`/admin/clients/${clientToDeleteId}`);
+      // CORREÇÃO: Adicionado /api/
+      await api.delete(`/api/admin/clients/${clientToDeleteId}`);
       fetchClients();
       closeConfirmDeleteModal();
     } catch (err) {

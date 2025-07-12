@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import api from '../api/axiosConfig'; // <-- ALTERADO
+import api from '../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { FaCheckCircle, FaCopy } from 'react-icons/fa';
@@ -137,8 +137,8 @@ const AdminNewTrackingPage = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        // ALTERADO: Usa 'api' e a URL relativa
-        const response = await api.get('/admin/clients');
+        // CORREÇÃO: Adicionado /api/
+        const response = await api.get('/api/admin/clients');
         setClients(response.data);
         if (response.data.length > 0) {
           setSelectedClient(response.data[0]._id);
@@ -161,8 +161,8 @@ const AdminNewTrackingPage = () => {
     const newCode = generateRandomCode();
 
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
-      await api.post('/admin/packages', 
+      // CORREÇÃO: Adicionado /api/
+      await api.post('/api/admin/packages', 
         {
           code: newCode,
           previsaoEntrega,

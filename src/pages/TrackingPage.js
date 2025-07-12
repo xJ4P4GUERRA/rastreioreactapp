@@ -8,8 +8,7 @@ import TrackingHistory from '../components/TrackingHistory';
 import TrackingPageSkeleton from '../components/TrackingPageSkeleton';
 import { FaCalendarAlt } from 'react-icons/fa';
 
-// ... (Todos os styled-components continuam exatamente iguais)
-// ... (Copie e cole toda a parte de estilos que já existia)
+// ... (Todos os `styled-components` continuam exatamente iguais)
 const pageVariants = {
   initial: { opacity: 0, scale: 0.99 },
   in: { opacity: 1, scale: 1 },
@@ -140,25 +139,24 @@ const TrackingPage = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    setError('');
-
-    // --- CORREÇÃO FINAL AQUI ---
-    // Adicionamos o prefixo /api/ que estava faltando na URL.
-    const apiUrl = `${process.env.REACT_APP_API_URL}/api/track/${trackingCode}`;
-    // --- FIM DA CORREÇÃO ---
-
-    api.get(apiUrl)
-      .then(response => {
+    const fetchTrackingData = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        // CORREÇÃO: Chamada padronizada, agora que o axiosConfig está 100% correto.
+        const response = await api.get(`/api/track/${trackingCode}`);
         setData(response.data);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error("Erro detalhado da API:", err);
         setError(err.response?.data?.message || 'Erro ao procurar o rastreio.');
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    if (trackingCode) {
+      fetchTrackingData();
+    }
   }, [trackingCode]);
 
   return (
