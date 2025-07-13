@@ -4,7 +4,6 @@ const cors = require('cors');
 require('dotenv').config();
 
 // --- MODELOS DO BANCO DE DADOS ---
-// Modelo para Clientes
 const clientSchema = new mongoose.Schema({
   name: { type: String, required: true },
   cpf: { type: String },
@@ -12,7 +11,6 @@ const clientSchema = new mongoose.Schema({
 }, { timestamps: true });
 const Client = mongoose.model('Client', clientSchema);
 
-// Modelo para Pacotes de Rastreio
 const packageSchema = new mongoose.Schema({
   code: { type: String, required: true, unique: true },
   client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
@@ -32,38 +30,22 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 
-// --- CONFIGURAÇÃO DO CORS ---
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://seurastreioexactapp.netlify.app'
-];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  optionsSuccessStatus: 200
-};
-
-
 // --- MIDDLEWARES ---
-app.use(cors(corsOptions));
+// A configuração de CORS foi simplificada para permitir as requisições do seu frontend.
+app.use(cors()); 
 app.use(express.json());
 
-// Middleware de autenticação (desativado, mas mantido para não quebrar a estrutura)
 const jwtAuth = (req, res, next) => {
-  // A verificação foi removida, a requisição passa diretamente.
   next();
 };
 
 
 // --- ROTAS E LÓGICA DA API ---
+app.get('/', (req, res) => {
+  res.send('API do Sistema de Rastreio está online!');
+});
 
-// Rota para obter todos os clientes
-// Acede via: GET /admin/clients
+// ... (O restante das suas rotas de /admin/clients, /admin/packages, etc. continua igual)
 app.get('/admin/clients', jwtAuth, async (req, res) => {
   try {
     const clients = await Client.find().sort({ name: 1 });
@@ -74,8 +56,6 @@ app.get('/admin/clients', jwtAuth, async (req, res) => {
   }
 });
 
-// Rota para criar um novo cliente
-// Acede via: POST /admin/clients
 app.post('/admin/clients', jwtAuth, async (req, res) => {
   const { name, cpf, phone } = req.body;
   try {
@@ -88,8 +68,6 @@ app.post('/admin/clients', jwtAuth, async (req, res) => {
   }
 });
 
-// Rota para apagar um cliente
-// Acede via: DELETE /admin/clients/:id
 app.delete('/admin/clients/:id', jwtAuth, async (req, res) => {
   try {
     const clientId = req.params.id;
@@ -102,8 +80,6 @@ app.delete('/admin/clients/:id', jwtAuth, async (req, res) => {
   }
 });
 
-// Rota para obter todos os pacotes
-// Acede via: GET /admin/packages
 app.get('/admin/packages', jwtAuth, async (req, res) => {
     try {
         const packages = await Package.find().populate('client', 'name').sort({ createdAt: -1 });
@@ -113,8 +89,6 @@ app.get('/admin/packages', jwtAuth, async (req, res) => {
     }
 });
 
-// Rota para criar um novo pacote
-// Acede via: POST /admin/packages
 app.post('/admin/packages', jwtAuth, async (req, res) => {
     const { code, previsaoEntrega, clientId } = req.body;
     try {
@@ -131,8 +105,6 @@ app.post('/admin/packages', jwtAuth, async (req, res) => {
     }
 });
 
-// Rota para atualizar um pacote
-// Acede via: PUT /admin/packages/:code/update
 app.put('/admin/packages/:code/update', jwtAuth, async (req, res) => {
     const { status, local } = req.body;
     try {
@@ -147,8 +119,6 @@ app.put('/admin/packages/:code/update', jwtAuth, async (req, res) => {
     }
 });
 
-// Rota para apagar um pacote
-// Acede via: DELETE /admin/packages/:id
 app.delete('/admin/packages/:id', jwtAuth, async (req, res) => {
     try {
         await Package.findByIdAndDelete(req.params.id);
@@ -158,8 +128,6 @@ app.delete('/admin/packages/:id', jwtAuth, async (req, res) => {
     }
 });
 
-// Rota pública para rastreio do cliente final
-// Acede via: GET /client/track/:code
 app.get('/client/track/:code', async (req, res) => {
     try {
         const pkg = await Package.findOne({ code: req.params.code });
@@ -183,9 +151,5 @@ mongoose.connect(process.env.MONGODB_URI)
   })
   .catch(err => {
     console.error('Erro ao conectar ao MongoDB:', err);
+    process.exit(1); 
   });
-
-// Rota raiz para verificação
-app.get('/', (req, res) => {
-  res.send('API do Sistema de Rastreio está online!');
-});
