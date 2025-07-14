@@ -143,19 +143,18 @@ const TrackingPage = () => {
     setLoading(true);
     setError('');
 
-    // --- MUDANÇA PRINCIPAL AQUI ---
-    // Construímos a URL completa e absoluta, usando a variável de ambiente do Vercel.
-    // Isso remove qualquer ambiguidade para o navegador do celular.
-    const apiUrl = `${process.env.REACT_APP_API_URL}/track/${trackingCode}`;
-    // --- FIM DA MUDANÇA ---
+    // --- CORREÇÃO APLICADA AQUI ---
+    // Adicionamos o /client que estava faltando na URL.
+    const apiUrl = `/client/track/${trackingCode}`;
+    // --- FIM DA CORREÇÃO ---
 
-    // O resto da chamada continua igual, usando a instância 'api'
+    // A chamada agora usa a instância 'api' do Axios, que já tem a baseURL configurada,
+    // então passamos apenas a parte final da URL.
     api.get(apiUrl)
       .then(response => {
         setData(response.data);
       })
       .catch(err => {
-        // Mensagem de erro melhorada para depuração
         console.error("Erro detalhado da API:", err);
         setError(err.response?.data?.message || 'Erro ao procurar o rastreio.');
       })
