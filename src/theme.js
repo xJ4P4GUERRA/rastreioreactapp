@@ -1,21 +1,25 @@
-// Este ficheiro define o tema de cores para a aplicação.
-// É usado pelo ThemeProvider no App.js para passar as cores para todos os styled-components.
+// Este ficheiro define as paletas de cores para os temas claro e escuro.
 
-export const theme = {
-  // Cores de Texto
-  text: '#F9FAFB',      // Cor principal do texto (branco/cinza claro)
-  subtext: '#9CA3AF',   // Cor para texto secundário (cinza)
+export const darkTheme = {
+  text: '#F9FAFB',
+  subtext: '#9CA3AF',
+  body: '#111827',
+  cardBg: '#1F2937',
+  border: '#374151',
+  accent: '#FBBF24',
+  success: '#10B981',
+  error: '#EF4444',
+  warning: '#F59E0B',
+};
 
-  // Cores de Fundo
-  body: '#111827',      // Cor de fundo principal da página (azul escuro/preto)
-  cardBg: '#1F2937',    // Cor de fundo para cards e sidebar (azul/cinza escuro)
-
-  // Cores de Elementos
-  border: '#374151',    // Cor para bordas
-  accent: '#FBBF24',    // Cor de destaque para botões e links ativos (amarelo/laranja)
-
-  // Cores de Feedback
-  success: '#10B981',   // Verde para sucesso
-  error: '#EF4444',     // Vermelho para erros
-  warning: '#F59E0B',   // Laranja para avisos
+export const lightTheme = {
+  text: '#111827',
+  subtext: '#4B5563',
+  body: '#F9FAFB',
+  cardBg: '#FFFFFF',
+  border: '#E5E7EB',
+  accent: '#F59E0B',
+  success: '#059669',
+  error: '#DC2626',
+  warning: '#D97706',
 };

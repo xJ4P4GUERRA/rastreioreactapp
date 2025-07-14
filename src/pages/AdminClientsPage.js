@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import api from '../api/axiosConfig'; // <-- ALTERADO
+import api from '../api/axiosConfig';
 import Modal from 'react-modal';
 import { FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 
-// ... (Todos os `styled-components` continuam iguais)
+// ... (Header, Title, CreateButton continuam iguais)
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -16,7 +16,7 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.text};
 `;
 const CreateButton = styled.button`
-  background-color: #10B981;
+  background-color: ${({ theme }) => theme.success};
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -25,8 +25,10 @@ const CreateButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  &:hover { background-color: #059669; }
+  &:hover { background-color: ${({ theme }) => theme.successHover}; }
 `;
+// ... (outros styled-components)
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -35,7 +37,18 @@ const Table = styled.table`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  @media (max-width: 768px) {
+    border-radius: 0;
+    box-shadow: none;
+    background-color: transparent;
+
+    thead {
+      display: none;
+    }
+  }
 `;
+
 const Th = styled.th`
   padding: 1rem;
   background-color: ${({ theme }) => theme.body};
@@ -45,11 +58,58 @@ const Th = styled.th`
   text-transform: uppercase;
   letter-spacing: 0.05em;
 `;
+
+const Tr = styled.tr`
+  &:nth-child(even) {
+    background-color: ${({ theme }) => theme.body};
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid ${({ theme }) => theme.border};
+    overflow: hidden;
+    background-color: ${({ theme }) => theme.cardBg} !important;
+  }
+`;
+
 const Td = styled.td`
   padding: 1rem;
   border-bottom: 1px solid ${({ theme }) => theme.border};
   color: ${({ theme }) => theme.text};
+
+  ${Tr}:last-child & {
+    border-bottom: none;
+  }
+
+  @media (max-width: 768px) {
+    display: block;
+    text-align: right;
+    position: relative;
+    padding-left: 50%;
+    border-bottom: 1px solid ${({ theme }) => theme.border};
+    
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 10px;
+      width: calc(50% - 20px);
+      text-align: left;
+      font-weight: bold;
+      color: ${({ theme }) => theme.subtext};
+    }
+  }
 `;
+
+// ... (Restante do arquivo, incluindo a lógica do componente React, continua igual)
+// ... (Só precisamos ajustar o JSX para usar os novos componentes Tr e Td com data-label)
+
+// O restante do arquivo (Form, Input, ModalTitle, etc.) pode continuar o mesmo
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -76,6 +136,9 @@ const ModalTitle = styled.h2`
 const ActionsContainer = styled.div`
   display: flex;
   gap: 0.5rem;
+  @media (max-width: 768px) {
+    justify-content: flex-end;
+  }
 `;
 const DeleteButton = styled.button`
   background-color: #EF4444;
@@ -117,6 +180,7 @@ const CancelButton = styled(CreateButton)`
   &:hover { background-color: #4B5563; }
 `;
 
+
 Modal.setAppElement('#root');
 
 const AdminClientsPage = () => {
@@ -135,7 +199,6 @@ const AdminClientsPage = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      // ALTERADO: Usa 'api' e a URL relativa
       const response = await api.get('/admin/clients');
       setClients(response.data);
     } catch (err) {
@@ -160,7 +223,6 @@ const AdminClientsPage = () => {
   const handleCreateClient = async (e) => {
     e.preventDefault();
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
       await api.post('/admin/clients', 
         { name: newClientName, cpf: newClientCpf, phone: newClientPhone }
       );
@@ -184,7 +246,6 @@ const AdminClientsPage = () => {
   const handleDeleteClient = async () => {
     if (!clientToDeleteId) return;
     try {
-      // ALTERADO: Usa 'api' e a URL relativa
       await api.delete(`/admin/clients/${clientToDeleteId}`);
       fetchClients();
       closeConfirmDeleteModal();
@@ -225,18 +286,18 @@ const AdminClientsPage = () => {
         </thead>
         <tbody>
           {clients.map((client) => (
-            <tr key={client._id}>
-              <Td>{client.name}</Td>
-              <Td>{client.cpf || 'N/A'}</Td>
-              <Td>{client.phone || 'N/A'}</Td>
-              <Td>
+            <Tr key={client._id}>
+              <Td data-label="Nome">{client.name}</Td>
+              <Td data-label="CPF">{client.cpf || 'N/A'}</Td>
+              <Td data-label="Telefone">{client.phone || 'N/A'}</Td>
+              <Td data-label="Ações">
                 <ActionsContainer>
                   <DeleteButton onClick={() => openConfirmDeleteModal(client._id)}>
                     <FaTrash />
                   </DeleteButton>
                 </ActionsContainer>
               </Td>
-            </tr>
+            </Tr>
           ))}
         </tbody>
       </Table>

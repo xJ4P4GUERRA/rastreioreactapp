@@ -1,14 +1,13 @@
 import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { ThemeProvider } from 'styled-components'; // Importa o ThemeProvider
+import { CustomThemeProvider } from './context/ThemeContext'; // <-- MUDANÇA
 import GlobalStyles from './globalStyles';
-import { theme } from './theme'; // Importa o seu objeto de tema
 
 // Importa as suas páginas
 import HomePage from './pages/HomePage';
 import TrackingPage from './pages/TrackingPage';
-import AdminLayout from './components/admin/AdminLayout';
+import AdminLayout from './layouts/AdminLayout'; // <-- MUDANÇA
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminClientsPage from './pages/AdminClientsPage';
 import AdminNewTrackingPage from './pages/AdminNewTrackingPage';
@@ -18,8 +17,7 @@ function App() {
   const location = useLocation();
 
   return (
-    // O ThemeProvider envolve toda a aplicação, fornecendo o tema a todos os componentes
-    <ThemeProvider theme={theme}>
+    <CustomThemeProvider> {/* <-- MUDANÇA */}
       <GlobalStyles />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
@@ -27,10 +25,9 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/rastreio/:trackingCode" element={<TrackingPage />} />
           
-          {/* Rotas de Admin agora são públicas e diretas */}
+          {/* O AdminLayout agora envolve todas as rotas de admin */}
           <Route path="/admin" element={<AdminLayout />}>
-            {/* Redireciona /admin para /admin/dashboard */}
-            <Route index element={<Navigate to="/admin/dashboard" replace />} /> 
+            <Route index element={<Navigate to="dashboard" replace />} /> 
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="clients" element={<AdminClientsPage />} />
             <Route path="new-tracking" element={<AdminNewTrackingPage />} />
@@ -38,7 +35,7 @@ function App() {
           </Route>
         </Routes>
       </AnimatePresence>
-    </ThemeProvider>
+    </CustomThemeProvider>
   );
 }
 
