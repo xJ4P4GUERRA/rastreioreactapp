@@ -39,7 +39,7 @@ const Footer = () => {
         <a href="#" target="_blank" rel="noopener noreferrer"><FaLinkedin /></a>
         <a href="#" target="_blank" rel="noopener noreferrer"><FaTwitter /></a>
       </SocialLinks>
-      <CopyrightText>© 2025 JadLogTransportadora. Todos os direitos reservados.</CopyrightText>
+      <CopyrightText>© 2025 Todos os direitos reservados.</CopyrightText>
     </FooterContainer>
   );
 };
